@@ -12,22 +12,31 @@ namespace WinPrintLimiter.PrintControl
 {
     internal class RemoteUserContext : UserContextBase
     {
+        private const string ApiPath ="/PrintLimitApi";
         HttpClient ApiClient;
 
         string Endpoint;
+        string Username;
 
         internal RemoteUserContext(string ApiEndpoint)
         {
             ApiClient = new HttpClient();
-            Endpoint = ApiEndpoint;
-            ///g
+            Endpoint = ApiEndpoint+ApiPath;
+            Username = Environment.UserName;
         }
 
 
-        public async Task TryRegister()
+        public async Task<string> ServerHello()
         {
-            HttpResponseMessage response = await ApiClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,$"{Endpoint}/ok"));
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            
+          //  HttpResponseMessage response = await ApiClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,$"{Endpoint}/hello"));
+            var data = new MultipartFormDataContent
+            {
+                { new StringContent("username"), Username }
+            };
+
+            HttpResponseMessage response = await ApiClient.PostAsync($"{Endpoint}/hello",data);
+            return await response.Content.ReadAsStringAsync();
             
         }
 

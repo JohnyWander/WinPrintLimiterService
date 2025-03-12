@@ -1,11 +1,13 @@
 using PrintLimiterApi.Configuration;
+using PrintLimiterApi.Users;
+
 namespace PrintLimiterApi
 {
     public class Program
     {
         internal static bool Debug = false;
 
-
+        internal static UserManager UserManager = new UserManager();
 
 
         public static void Main(string[] args)

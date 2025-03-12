@@ -87,7 +87,8 @@ namespace WinPrintLimiter
                 string endpoint = configuration.ParsedConfig.Where(conf => conf.Key == "host").FirstOrDefault().Value;
                 Console.WriteLine(endpoint);
                 RemoteUserContext context = new RemoteUserContext(endpoint);
-                    context.TryRegister().Wait();
+
+                Console.WriteLine(context.ServerHello().GetAwaiter().GetResult()); ;
             }
 
 

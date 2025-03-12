@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using static PrintLimiterApi.Program;
 namespace PrintLimiterApi.Controllers
 {
     
@@ -13,10 +13,24 @@ namespace PrintLimiterApi.Controllers
 
         }
 
-        [HttpGet("ok")]
-         public string ok() {
+        [HttpPost("hello")]
+         public string hello(IFormCollection data)
+         {
+            if (UserManager.CheckForContextExistance(data["username"].ToString()))
+            {
+                return "logged";
+               
+            }
+            else
+            {
+                UserManager
+                return "registered";
+            }
+           
+            
+            
             return "X";
-        }
+         }
 
     }
 }
