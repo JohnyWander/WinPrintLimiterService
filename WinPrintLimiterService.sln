@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintLimiterApi", "PrintLimiterApi\PrintLimiterApi.csproj", "{83FF6AF9-7CA9-4157-A0C7-7F530DE3E5E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinPrintLimiter", "WinPrintLimiter\WinPrintLimiter.csproj", "{3FA8FBA2-1A92-4A61-A0F4-968D77332A06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinPrintLimiterInstaller", "WinPrintLimiterInstaller\WinPrintLimiterInstaller.csproj", "{0F280221-97FE-416F-9397-FE9C82125425}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinPrintLimiterService", "WinPrintLimiterService\WinPrintLimiterService.csproj", "{AD421F2F-12DF-4FD3-9E95-6A32E7732E51}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83FF6AF9-7CA9-4157-A0C7-7F530DE3E5E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83FF6AF9-7CA9-4157-A0C7-7F530DE3E5E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83FF6AF9-7CA9-4157-A0C7-7F530DE3E5E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83FF6AF9-7CA9-4157-A0C7-7F530DE3E5E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FA8FBA2-1A92-4A61-A0F4-968D77332A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FA8FBA2-1A92-4A61-A0F4-968D77332A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FA8FBA2-1A92-4A61-A0F4-968D77332A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FA8FBA2-1A92-4A61-A0F4-968D77332A06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F280221-97FE-416F-9397-FE9C82125425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F280221-97FE-416F-9397-FE9C82125425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F280221-97FE-416F-9397-FE9C82125425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F280221-97FE-416F-9397-FE9C82125425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD421F2F-12DF-4FD3-9E95-6A32E7732E51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD421F2F-12DF-4FD3-9E95-6A32E7732E51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD421F2F-12DF-4FD3-9E95-6A32E7732E51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD421F2F-12DF-4FD3-9E95-6A32E7732E51}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8E58488-93AA-4B29-AAFB-6EDB6E1C10A7}
+	EndGlobalSection
+EndGlobal
