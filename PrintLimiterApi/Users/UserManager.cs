@@ -1,4 +1,6 @@
-﻿namespace PrintLimiterApi.Users
+﻿using static PrintLimiterApi.Program;
+
+namespace PrintLimiterApi.Users
 {
     public class UserManager
     {
@@ -17,10 +19,16 @@
             }
         }
 
-
-        public void CreateUserContext()
+        public RemoteUserContext GetContext(string Username)
         {
-            Clients.Add(new RemoteUserContext());
+            return Clients.Where(x => x.UserName == Username).FirstOrDefault();
+        }
+
+
+
+        public void CreateUserContext(string username)
+        {
+            Clients.Add(new RemoteUserContext(username));
         }
 
 

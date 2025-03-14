@@ -31,7 +31,31 @@ namespace WinPrintLimiter.PrintControl
             }
            
         }
-        private int CurrentCount;
+        private int CurrentCount
+        {
+            get
+            {
+                if(_ISGlobal == true)
+                {
+                    return CurrentGlobalCount.value;
+                }
+                else
+                {
+                    return PerPrinterCount;
+                }
+            }
+
+
+            set
+            {
+                if (_ISGlobal == true)
+                {
+                    CurrentGlobalCount.value = value;
+                }
+              
+            }
+
+        }
 
         private int PerPrinterCount;
         private protected int PerPrinterLimit;

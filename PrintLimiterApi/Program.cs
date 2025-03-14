@@ -9,7 +9,7 @@ namespace PrintLimiterApi
 
         internal static UserManager UserManager = new UserManager();
 
-
+        internal static int GlobalMaxPagesConfig;
         public static void Main(string[] args)
         {
             ApiConfig();
@@ -19,7 +19,8 @@ namespace PrintLimiterApi
         private static void ApiConfig()
         {
             Configuration.Configuration configuration = new Configuration.Configuration();
-
+            ConfigRecord maxpagesRecord = configuration.ParsedConfig.Where(conf => conf.Key == "maxpages").FirstOrDefault();
+            int MaxPages = int.Parse(maxpagesRecord.Value);
         }
 
         private static void AspnetConfig(string[] args)
