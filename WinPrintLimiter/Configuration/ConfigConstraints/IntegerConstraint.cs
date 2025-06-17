@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
-
-namespace WinPrintLimiter.Configuration.ConfigConstraints
+﻿namespace WinPrintLimiter.Configuration.ConfigConstraints
 {
     internal class IntegerConstraint : ConstraintBase
     {
@@ -15,7 +8,7 @@ namespace WinPrintLimiter.Configuration.ConfigConstraints
             return int.TryParse(data, out _);
         }
 
-        internal override string ConstraintFailMessage { get { return _FailMessage;  }   }
+        internal override string ConstraintFailMessage { get { return _FailMessage; } }
 
     }
 }

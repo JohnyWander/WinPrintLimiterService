@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.IO;
 using WinPrintLimiter.Configuration.Exceptions;
 
 namespace WinPrintLimiter.Configuration
@@ -66,17 +61,17 @@ namespace WinPrintLimiter.Configuration
 
         private void Parse()
         {
-            List<string> configurationLines = File.ReadAllLines(ConfigFilename).Where(line => !line.StartsWith("#") &&line!=string.Empty).ToList();
+            List<string> configurationLines = File.ReadAllLines(ConfigFilename).Where(line => !line.StartsWith("#") && line != string.Empty).ToList();
 
             configurationLines.ForEach(line =>
             {
                 string[] split = line.Split('=');
                 string key = split[0];
                 string value = split[1];
-               // Console.WriteLine(key + "====" + value);
+                // Console.WriteLine(key + "====" + value);
                 ConfigRecord rec = base.ConfigData.Where(c => c.Key == key).Select(c => c.Value).FirstOrDefault();
                 rec.Key = key;
-                
+
                 if (rec.Constraint is not null)
                 {
                     if (rec.Constraint.ConstraintCheck(value))
@@ -107,16 +102,16 @@ namespace WinPrintLimiter.Configuration
         {
             List<string> configurationLines = File.ReadAllLines(PrinterSetupFilename).Where(line => !line.StartsWith("#")).ToList();
 
-            int index =0;
-            int indexEnd =0;
-            while(index!= -1)
+            int index = 0;
+            int indexEnd = 0;
+            while (index != -1)
             {
                 index = configurationLines.FindIndex(x => x.Contains("<Printer>"));
                 indexEnd = configurationLines.FindIndex(x => x.Contains("</Printer>"));
 
                 if (index > 0 && indexEnd > 0)
                 {
-                    List<string> lines = configurationLines.GetRange(index, indexEnd - index+ 1);
+                    List<string> lines = configurationLines.GetRange(index, indexEnd - index + 1);
                     lines.ForEach(s =>
                     {
                         configurationLines.Remove(s);
@@ -127,7 +122,7 @@ namespace WinPrintLimiter.Configuration
                         string printServerLine = lines.Where(x => x.Contains("PrintServer")).FirstOrDefault();
                         string printerNameLine = lines.Where(x => x.Contains("PrinterName")).FirstOrDefault();
                         string dailyLimitLine = lines.Where(x => x.Contains("DailyPagesLimit")).FirstOrDefault();
-                        
+
 
                         if (printServerLine is null) { throw new ConfigurationException($"Printer configuration at line {index} lacks print server name"); }
                         if (printerNameLine is null) { throw new ConfigurationException($"Printer configuration at line {index} lacks printer name"); }
@@ -145,22 +140,23 @@ namespace WinPrintLimiter.Configuration
 
                         if (InheritsFromGlobalConfLimit)
                         {
-                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, int.Parse(dailyLimit),true));
+                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, int.Parse(dailyLimit), true));
                         }
                         else
                         {
                             base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, int.Parse(dailyLimit)));
                         }
 
-                        if (Program.Debug) { 
+                        if (Program.Debug)
+                        {
                             base.ParsedPrinterConfig.ForEach(printer =>
                             {
                                 Console.WriteLine($"PRINTER|{printer.PrintServer}|{printer.PrinterName}|{printer.DailyPagesLimit}");
                             });
-                        }   
+                        }
                     }
 
-                    
+
                 }
             }
         }

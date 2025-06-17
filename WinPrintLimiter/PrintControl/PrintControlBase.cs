@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing.Printing;
 using System.Printing;
-using System.Drawing.Printing;
 
 namespace WinPrintLimiter.PrintControl
 {
@@ -29,13 +24,13 @@ namespace WinPrintLimiter.PrintControl
                     return PerPrinterLimit;
                 }
             }
-           
+
         }
         private int CurrentCount
         {
             get
             {
-                if(_ISGlobal == true)
+                if (_ISGlobal == true)
                 {
                     return CurrentGlobalCount.value;
                 }
@@ -52,7 +47,7 @@ namespace WinPrintLimiter.PrintControl
                 {
                     CurrentGlobalCount.value = value;
                 }
-              
+
             }
 
         }
@@ -63,28 +58,29 @@ namespace WinPrintLimiter.PrintControl
         private protected SharedInt CurrentGlobalCount;
         private protected SharedInt GlobalLimit;
 
-        
+
+        internal Action<int> PageCountIncrement;
 
 
-        internal protected PrintControlBase(SharedInt currentGlobalCount,SharedInt globalLimit)
+        internal protected PrintControlBase(SharedInt currentGlobalCount, SharedInt globalLimit)
         {
             this.CurrentGlobalCount = currentGlobalCount;
             this.GlobalLimit = globalLimit;
             _ISGlobal = true;
-            
+
         }
 
-        internal protected PrintControlBase(int correntOwnCount,int ownLimit)
+        internal protected PrintControlBase(int correntOwnCount, int ownLimit)
         {
             this.PerPrinterLimit = ownLimit;
             this.PerPrinterCount = correntOwnCount;
             _ISGlobal = false;
         }
 
-        
 
-        internal void ListInstalledPrinters() 
-        { 
+
+        internal void ListInstalledPrinters()
+        {
             foreach (string printer in PrinterSettings.InstalledPrinters)
             {
                 MessageBox.Show(printer);
@@ -96,8 +92,8 @@ namespace WinPrintLimiter.PrintControl
             LocalPrintServer printServerLocal = new LocalPrintServer();
             PrintQueue queue = printServerLocal.GetPrintQueue(this.PrinterName);
             PrintingMonitor(queue);
-            
-            
+
+
         }
 
         internal void RemotePrinterMonitor()
@@ -107,45 +103,87 @@ namespace WinPrintLimiter.PrintControl
             PrintQueue queue = printServer.GetPrintQueue(this.PrinterName);
 
             PrintingMonitor(queue);
-            
-            
+
+
         }
 
-    
+
         private void PrintingMonitor(PrintQueue printQueue)
         {
-           
+            List<PrintSystemJobInfo> printJob = new List<PrintSystemJobInfo>();
+
 
             Console.WriteLine("Printing monitor starting");
-                while (true)
+
+            while (true)
+            {
+                printQueue.Refresh(); // Refresh the queue to get updated jobs
+                PrintJobInfoCollection jobs = printQueue.GetPrintJobInfoCollection();
+                //Console.WriteLine($"{CurrentCount}/{PagesLimit}");
+
+
+                if (jobs.Count() != 0)
                 {
-                    printQueue.Refresh(); // Refresh the queue to get updated jobs
-                    PrintJobInfoCollection jobs = printQueue.GetPrintJobInfoCollection();
-                    Console.WriteLine($"{CurrentCount}/{PagesLimit}");
-                    foreach (PrintSystemJobInfo job in jobs)
+
+                    bool JobWasCancelled = false;
+                    PrintSystemJobInfo job = jobs.First();
+
+                    if (job.Submitter == Environment.UserName)
                     {
-                        if (job.NumberOfPages >= this.PagesLimit)
+
+
+
+                        bool Finished = false;
+                        if (CurrentCount >= PagesLimit)
                         {
-                            Console.WriteLine($"Job '{job.Name}' by {job.Submitter} exceeds page limit and will be canceled.");
-                            Task.Run(() =>
-                            {
-                                MessageBox.Show($"Przekroczono limit stron ({PagesLimit}). Pages printed count exceeded ({PagesLimit})");
-                            });
-                            job.Cancel();  // Cancel the job
+                            job.Cancel();
+                            Console.WriteLine($"Job was cancelled because limit is reached - {CurrentCount}/{PagesLimit}");
+                            Thread.Sleep(4000);
+                            JobWasCancelled = true;
+                            Finished = true;
                         }
-                        else if (CurrentCount <= PagesLimit)
+
+
+                        while (Finished == false)
+                        {
+                            job.Refresh();
+                            if (job.NumberOfPages > PagesLimit || CurrentCount + job.NumberOfPages > PagesLimit)
+                            {
+                                Console.WriteLine($"Job was cancelled because limit would be exceeded (Current count - {CurrentCount} + pages of the job - {job.NumberOfPages}) is higher than limit - {PagesLimit} ");
+
+                                job.Cancel();
+                                JobWasCancelled = true;
+                            }
+
+                            Console.WriteLine("N:" + job.NumberOfPages);
+                            printQueue.Refresh();
+                            jobs = printQueue.GetPrintJobInfoCollection();
+                            if (jobs.Count() == 0)
+                            {
+                                Thread.Sleep(4000);
+                                break;
+                            }
+
+
+
+                            Thread.Sleep(100);
+
+
+                        }
+
+                        Console.WriteLine("Finished, final count is: " + job.NumberOfPages);
+                        if (JobWasCancelled == false)
                         {
                             CurrentCount += job.NumberOfPages;
-                            continue;
-                        }
-                        else if (CurrentCount > PagesLimit)
-                        {
-                            Console.WriteLine($"Przekroczono dzienny limit drukowania ({PagesLimit}) anulowano drukowanie,Daily Limit exceeded ({PagesLimit}) print job cancelled");
+                            PageCountIncrement.Invoke(job.NumberOfPages);
                         }
                     }
+                }
 
-                    Thread.Sleep(1000);  // Check every 5 seconds
-                } 
-    }
+
+
+                Thread.Sleep(100);  // Check every 5 seconds
+            }
+        }
     }
 }

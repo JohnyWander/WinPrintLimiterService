@@ -1,11 +1,7 @@
 using System.IO;
-using WinPrintLimiter.PrintControl;
 using System.Runtime.Serialization.Formatters.Binary;
-using Microsoft.VisualBasic.Logging;
-using System.Runtime.Serialization;
 using WinPrintLimiter.Configuration;
 using WinPrintLimiter.PrintControl;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WinPrintLimiter
 {
@@ -27,14 +23,14 @@ namespace WinPrintLimiter
             if (mode is null)
             {
                 throw new InvalidOperationException("there is not mode setting set, stopping");
-                Console.ReadLine();Environment.Exit(0);
+                Console.ReadLine(); Environment.Exit(0);
             }
-            else if(mode.Value=="local")
+            else if (mode.Value == "local")
             {
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                 string Username = Environment.UserName;
 
-                ConfigRecord maxpagesRecord = configuration.ParsedConfig.Where(conf => conf.Key =="maxpages").FirstOrDefault();
+                ConfigRecord maxpagesRecord = configuration.ParsedConfig.Where(conf => conf.Key == "maxpages").FirstOrDefault();
                 int MaxPages = int.Parse(maxpagesRecord.Value);
 
 
@@ -47,13 +43,13 @@ namespace WinPrintLimiter
                     using (var stream = new FileStream($"{ContextsPath}\\{Username}.dat", FileMode.Open))
                     {
                         UserContext = (LocalUserContext)binaryFormatter.Deserialize(stream);
-                        
+
                         RunContextSaver(UserContext);
-                    }              
+                    }
                 }
                 else
                 {
-                    UserContext = new LocalUserContext(Environment.UserName,MaxPages);
+                    UserContext = new LocalUserContext(Environment.UserName, MaxPages);
 
                     RunContextSaver(UserContext);
                 }
@@ -61,15 +57,15 @@ namespace WinPrintLimiter
                 List<PrinterContext> printers = new List<PrinterContext>();
                 configuration.ParsedPrinterConfig.ForEach(p =>
                 {
-                   
+
                     PrinterContext context;
                     if (p.InheritsFromGlobalLimit)
                     {
-                         context = new PrinterContext(p.PrintServer, p.PrinterName,UserContext.GlobalJobsCounter,UserContext.MaxGlobal);
+                        context = new PrinterContext(p.PrintServer, p.PrinterName, UserContext.GlobalJobsCounter, UserContext.MaxGlobal);
                     }
                     else
                     {
-                         context = new PrinterContext(p.PrintServer, p.PrinterName, 0, p.DailyPagesLimit);
+                        context = new PrinterContext(p.PrintServer, p.PrinterName, 0, p.DailyPagesLimit);
                     }
 
                     printers.Add(context);
@@ -88,27 +84,81 @@ namespace WinPrintLimiter
                 Console.WriteLine(endpoint);
                 RemoteUserContext context = new RemoteUserContext(endpoint);
 
-                Console.WriteLine(context.ServerHello().GetAwaiter().GetResult()); ;
+                string ServerHello = context.ServerHello().GetAwaiter().GetResult();
+                string[] HelloSplit = ServerHello.Split("|");
+                string[] StatusInfoSplit = HelloSplit[0].Split(";");
+                string PrinterInfo = HelloSplit[1];
+
+                string[] PrinterInfoSplit = PrinterInfo.Split("%endpconf%");
+                PrinterInfoSplit = PrinterInfoSplit.Take(PrinterInfoSplit.Length - 1).ToArray();
+
+
+                string rType = StatusInfoSplit[0];
+                string uGlobalLimit = StatusInfoSplit[1].Split("=")[1];
+                string globalLimit = StatusInfoSplit[2].Split("=")[1];
+
+                List<PrinterContext> printers = new List<PrinterContext>();
+                foreach (string printer in PrinterInfoSplit)
+                {
+
+                    string[] split = printer.Split(";");
+                    string PrintServer = split[0];
+                    string PrinterName = split[1];
+                    string Limit = split[2];
+                    bool GlobalLimit = int.Parse(Limit) == -99 ? true : false;
+
+                    Console.WriteLine("\nGot configuration:");
+                    Console.WriteLine($"Printer name: {PrinterName}");
+                    Console.WriteLine($"Print Server: {PrintServer}");
+                    Console.WriteLine($"Limit: {Limit}");
+                    Console.WriteLine($"Limit is global?: {GlobalLimit}");
+
+                    if (GlobalLimit)
+                    {
+                        PrinterContext con = new PrinterContext(PrintServer, PrinterName, new SharedInt(int.Parse(uGlobalLimit)), new SharedInt(int.Parse(globalLimit)));
+                        con.PageCountIncrement = (int amount) =>
+                        {
+                            context.IncrementCurrentAmount(amount).GetAwaiter().GetResult();
+                        };
+
+                        printers.Add(con);
+                    }
+
+
+                }
+
+                context.Printers = printers;
+                context.BindPrintersToContext();
+
+
+
+                //  Console.WriteLine(response);
+                //string inc = context.IncrementCurrentAmount(4).GetAwaiter().GetResult();
+
+                string response2 = context.ServerHello().GetAwaiter().GetResult();
+
+                Console.WriteLine(response2);
+
             }
 
 
 
-            
-         
 
-            
-            
 
-            
 
-           
+
+
+
+
+
+
             Console.ReadLine();
         }
 
 
         static void Init()
         {
-            if (!Directory.Exists(ContextsPath)) 
+            if (!Directory.Exists(ContextsPath))
             {
                 Directory.CreateDirectory(ContextsPath);
             }

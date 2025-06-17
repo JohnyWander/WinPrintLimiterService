@@ -1,15 +1,16 @@
-﻿using static PrintLimiterApi.Program;
-
-namespace PrintLimiterApi.Users
+﻿namespace PrintLimiterApi.Users
 {
     public class UserManager
     {
-        List<RemoteUserContext> Clients = new List<RemoteUserContext>();
+        internal List<RemoteUserContext> Clients = new List<RemoteUserContext>();
 
 
         public bool CheckForContextExistance(string Username)
         {
-            if(Clients.Where(x=>x.UserName == Username).ToList().Count() == 1)
+
+            RemoteUserContext x = Clients.Find(x => x.Equals(Username));
+
+            if (x != null && x.UserName == Username)
             {
                 return true;
             }
@@ -17,6 +18,9 @@ namespace PrintLimiterApi.Users
             {
                 return false;
             }
+
+
+
         }
 
         public RemoteUserContext GetContext(string Username)
@@ -26,9 +30,11 @@ namespace PrintLimiterApi.Users
 
 
 
-        public void CreateUserContext(string username)
+        public RemoteUserContext CreateUserContext(string username)
         {
-            Clients.Add(new RemoteUserContext(username));
+            var context = new RemoteUserContext(username);
+            Clients.Add(context);
+            return context;
         }
 
 

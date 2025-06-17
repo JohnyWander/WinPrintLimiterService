@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            // 
+            // WinPrintLimiterService
+            // 
+            this.ServiceName = "WinPrintLimiter";
+
         }
 
         #endregion

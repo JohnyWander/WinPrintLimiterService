@@ -10,6 +10,9 @@ namespace PrintLimiterApi
         internal static UserManager UserManager = new UserManager();
 
         internal static int GlobalMaxPagesConfig;
+
+        internal static Configuration.Configuration Configuration;
+
         public static void Main(string[] args)
         {
             ApiConfig();
@@ -18,9 +21,15 @@ namespace PrintLimiterApi
 
         private static void ApiConfig()
         {
-            Configuration.Configuration configuration = new Configuration.Configuration();
-            ConfigRecord maxpagesRecord = configuration.ParsedConfig.Where(conf => conf.Key == "maxpages").FirstOrDefault();
-            int MaxPages = int.Parse(maxpagesRecord.Value);
+            Configuration = new Configuration.Configuration();
+
+            ConfigRecord maxpagesRecord = Configuration.ParsedConfig.Where(conf => conf.Key == "maxpages").FirstOrDefault();
+            GlobalMaxPagesConfig = int.Parse(maxpagesRecord.Value);
+
+            Configuration.ParsedPrinterConfig.ForEach(x =>
+            {
+                Console.WriteLine(x.PrintServer);
+            });
         }
 
         private static void AspnetConfig(string[] args)
@@ -32,7 +41,7 @@ namespace PrintLimiterApi
             builder.Services.AddControllers();
 
             var app = builder.Build();
-            
+
             // Configure the HTTP request pipeline.
 
             app.UseHttpsRedirection();

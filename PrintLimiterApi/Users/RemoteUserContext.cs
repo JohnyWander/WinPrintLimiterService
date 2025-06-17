@@ -1,6 +1,4 @@
-﻿using PrintLimiterApi.Configuration;
-using WinPrintLimiterApi.Users;
-using static PrintLimiterApi.Program;
+﻿using WinPrintLimiterApi.Users;
 namespace PrintLimiterApi.Users
 {
     public class RemoteUserContext
@@ -11,8 +9,8 @@ namespace PrintLimiterApi.Users
         public int PrintCount;
         public int PrintLimit;
 
-        internal SharedInt CurrentPagesCount;
-        internal SharedInt MaxPages;
+        internal SharedInt CurrentPagesCount = new SharedInt(0);
+        internal SharedInt MaxPages = new SharedInt(0);
 
         List<PrinterContext> Printers = new List<PrinterContext>();
 
@@ -24,11 +22,11 @@ namespace PrintLimiterApi.Users
 
             this.UserName = username;
 
-            
 
 
 
-        
+
+
         }
     }
 }

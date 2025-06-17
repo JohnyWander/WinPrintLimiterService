@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using PrintLimiterApi.Configuration.ConfigConstraints;
 
 namespace PrintLimiterApi.Configuration
 {
@@ -7,9 +6,9 @@ namespace PrintLimiterApi.Configuration
     {
         protected IDictionary<string, ConfigRecord> ConfigData = new Dictionary<string, ConfigRecord>()
         {
-            
+
             {"host",new ConfigRecord("host","","host address work working mode",null).Disable()},
-            {"maxpages",new ConfigRecord("maxpages","-1","Max pages user can print(global option, can be overriden by printer specific congfig,\n# (local mode only) for online mode adjust server settings ")},
+            {"maxpages",new ConfigRecord("maxpages","-1","Max pages user can print(global option, can be overriden by printer specific congfig,\n# (local mode only) for online mode adjust server settings ").Enable()},
 
 
         };

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrintLimiterApi.Configuration
+﻿namespace PrintLimiterApi.Configuration
 {
     internal struct PrinterConfig
     {
@@ -13,7 +7,7 @@ namespace PrintLimiterApi.Configuration
         internal int DailyPagesLimit;
 
         internal bool InheritsFromGlobalLimit;
-        internal PrinterConfig(string PrintServer,string PrinterName,int DailyPagesLimit,bool InheritsFromGlobalLimit = false)
+        internal PrinterConfig(string PrintServer, string PrinterName, int DailyPagesLimit, bool InheritsFromGlobalLimit = false)
         {
             this.PrintServer = PrintServer;
             this.PrinterName = PrinterName;

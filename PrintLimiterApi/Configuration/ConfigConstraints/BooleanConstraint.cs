@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrintLimiterApi.Configuration.ConfigConstraints
+﻿namespace PrintLimiterApi.Configuration.ConfigConstraints
 {
     internal class BooleanConstraint : ConstraintBase
     {
@@ -17,7 +10,7 @@ namespace PrintLimiterApi.Configuration.ConfigConstraints
             return result;
         }
 
-     
+
 
         internal override string ConstraintFailMessage { get { return _FailMessage; } }
 

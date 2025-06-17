@@ -6,6 +6,21 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="WinPrintLimiter.exe" />
+    <None Remove="WinPrintLimiterWatchdog.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="WinPrintLimiter.exe" />
+    <EmbeddedResource Include="WinPrintLimiterWatchdog.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TaskScheduler" Version="2.12.1" />
+  </ItemGroup>
 
 </Project>

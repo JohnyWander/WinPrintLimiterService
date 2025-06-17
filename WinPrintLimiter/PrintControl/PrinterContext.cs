@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinPrintLimiter.PrintControl
+﻿namespace WinPrintLimiter.PrintControl
 {
     internal sealed class PrinterContext : PrintControlBase
     {
@@ -48,16 +42,16 @@ namespace WinPrintLimiter.PrintControl
         }
 
 
-     
-        internal PrinterContext(string printServer,string printerName,int CurrentCount, int MaxPages) : base (CurrentCount,MaxPages)
+
+        internal PrinterContext(string printServer, string printerName, int CurrentCount, int MaxPages) : base(CurrentCount, MaxPages)
         {
             base.PrintServer = printServer;
             base.PrinterName = printerName;
-            
-        
+
+
         }
 
-        internal PrinterContext(string printServer,string printerName, SharedInt GlobalCurrentCount, SharedInt GlobalMax) : base (GlobalCurrentCount,GlobalMax)
+        internal PrinterContext(string printServer, string printerName, SharedInt GlobalCurrentCount, SharedInt GlobalMax) : base(GlobalCurrentCount, GlobalMax)
         {
             base.PrinterName = printerName;
             base.PrintServer = printServer;

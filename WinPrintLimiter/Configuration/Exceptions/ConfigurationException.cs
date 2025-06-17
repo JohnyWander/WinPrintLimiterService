@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinPrintLimiter.Configuration.Exceptions
+﻿namespace WinPrintLimiter.Configuration.Exceptions
 {
     internal class ConfigurationException : Exception
     {
@@ -13,6 +7,6 @@ namespace WinPrintLimiter.Configuration.Exceptions
 
         public ConfigurationException(string message) : base(message) { }
 
-        public ConfigurationException(string message,Exception innerException) : base(message, innerException) { }
+        public ConfigurationException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

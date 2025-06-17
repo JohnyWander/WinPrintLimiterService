@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using WinPrintLimiter.Configuration.ConfigConstraints;
 
 namespace WinPrintLimiter.Configuration
 {
-   
+
     internal class ConfigRecord
     {
         internal string Key;
@@ -29,24 +24,24 @@ namespace WinPrintLimiter.Configuration
                 dump.AppendLine($"#{Key}={Value}");
             }
 
-        return dump.ToString();
+            return dump.ToString();
         }
 
-        
+
 
         internal ConstraintBase Constraint = null;
 
 
-        public ConfigRecord(string key,string value,string description)
+        public ConfigRecord(string key, string value, string description)
         {
             Key = key;
             Value = value;
             Description = description;
         }
 
-        public ConfigRecord(string key,string value,string description,ConstraintBase constraint)
+        public ConfigRecord(string key, string value, string description, ConstraintBase constraint)
         {
-            Key=key;
+            Key = key;
             Value = value;
             Description = description;
             Constraint = constraint;
@@ -54,8 +49,8 @@ namespace WinPrintLimiter.Configuration
 
         public ConfigRecord Enable()
         {
-           this.isEnabled = true;
-           return this;
+            this.isEnabled = true;
+            return this;
         }
 
         public ConfigRecord Disable()

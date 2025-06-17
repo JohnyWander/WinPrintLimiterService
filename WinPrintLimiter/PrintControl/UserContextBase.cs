@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Runtime.Serialization;
 
 namespace WinPrintLimiter.PrintControl
 {
@@ -21,8 +15,10 @@ namespace WinPrintLimiter.PrintControl
 
         private string _Username;
 
-        public UserContextBase() {
-        
+        internal List<PrinterContext> Printers;
+        public UserContextBase()
+        {
+
         }
 
         protected UserContextBase(SerializationInfo info, StreamingContext context)
@@ -48,7 +44,38 @@ namespace WinPrintLimiter.PrintControl
         }
 
 
+        internal void BindPrintersToContext()
+        {
+            Printers.ForEach(P =>
+            {
+                Console.WriteLine($"Binding printer{P.PrinterName} from server {P.PrintServer}to user context ");
 
+                if (P.IsGlobalLimit)
+                {
+                    Console.WriteLine($"Max pages limit is inheritet from global config - MAX amount avaiable: {P.GlobalLimit}");
+                }
+                else
+                {
+                    Console.WriteLine($"Max pages limit is set in printer config - MAX amount avaiable: {P.PerPrinterLimit}");
+                }
+
+                Thread thread = new Thread(() =>
+                {
+                    if (P.PrintServer == "local")
+                    {
+                        P.LocalPrinterMonitor();
+                    }
+                    else
+                    {
+                        P.RemotePrinterMonitor();
+                    }
+                });
+                thread.Start();
+
+
+
+            });
+        }
 
 
         internal string Username
@@ -57,24 +84,24 @@ namespace WinPrintLimiter.PrintControl
             private set { _Username = value; }
         }
 
-  
+
         internal int CurrentPagesCount
         {
             get { return _CurrentJobsCount; }
             private set { _CurrentPagesCount = value; }
         }
-        internal int CurrentJobsCount 
-        { 
+        internal int CurrentJobsCount
+        {
             get { return _CurrentJobsCount; }
             private set { _CurrentJobsCount = value; }
         }
 
-      
+
 
         internal abstract string GetCurrentUsername();
 
 
-       
+
 
     }
 }

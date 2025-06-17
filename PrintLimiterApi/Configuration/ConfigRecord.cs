@@ -1,63 +1,63 @@
-﻿using System.Text;
-using PrintLimiterApi.Configuration.ConfigConstraints;
+﻿using PrintLimiterApi.Configuration.ConfigConstraints;
+using System.Text;
 
 namespace PrintLimiterApi.Configuration
 {
-        internal class ConfigRecord
+    internal class ConfigRecord
+    {
+        internal string Key;
+        internal string Value;
+        string Description;
+        bool? isEnabled = null;
+
+        internal string Dump()
         {
-            internal string Key;
-            internal string Value;
-            string Description;
-            bool? isEnabled = null;
-
-            internal string Dump()
+            StringBuilder dump = new StringBuilder();
+            dump.AppendLine($"#{Description}");
+            if (isEnabled == true)
             {
-                StringBuilder dump = new StringBuilder();
-                dump.AppendLine($"#{Description}");
-                if (isEnabled == true)
-                {
-                    dump.AppendLine($"{Key}={Value}");
-                }
-                else
-                {
-                    dump.AppendLine($"#{Key}={Value}");
-                }
-
-                return dump.ToString();
+                dump.AppendLine($"{Key}={Value}");
+            }
+            else
+            {
+                dump.AppendLine($"#{Key}={Value}");
             }
 
-
-
-            internal ConstraintBase Constraint = null;
-
-
-            public ConfigRecord(string key, string value, string description)
-            {
-                Key = key;
-                Value = value;
-                Description = description;
-            }
-
-            public ConfigRecord(string key, string value, string description, ConstraintBase constraint)
-            {
-                Key = key;
-                Value = value;
-                Description = description;
-                Constraint = constraint;
-            }
-
-            public ConfigRecord Enable()
-            {
-                this.isEnabled = true;
-                return this;
-            }
-
-            public ConfigRecord Disable()
-            {
-                this.isEnabled = false;
-                return this;
-            }
-
+            return dump.ToString();
         }
-    
+
+
+
+        internal ConstraintBase Constraint = null;
+
+
+        public ConfigRecord(string key, string value, string description)
+        {
+            Key = key;
+            Value = value;
+            Description = description;
+        }
+
+        public ConfigRecord(string key, string value, string description, ConstraintBase constraint)
+        {
+            Key = key;
+            Value = value;
+            Description = description;
+            Constraint = constraint;
+        }
+
+        public ConfigRecord Enable()
+        {
+            this.isEnabled = true;
+            return this;
+        }
+
+        public ConfigRecord Disable()
+        {
+            this.isEnabled = false;
+            return this;
+        }
+
+    }
+
 }

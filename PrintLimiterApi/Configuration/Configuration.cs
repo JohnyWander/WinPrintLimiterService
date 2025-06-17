@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using PrintLimiterApi.Configuration.Exceptions;
+﻿using PrintLimiterApi.Configuration.Exceptions;
 
 namespace PrintLimiterApi.Configuration
 {
@@ -105,6 +99,7 @@ namespace PrintLimiterApi.Configuration
 
         private void ParsePrinterConf()
         {
+            Console.WriteLine("PARSING PRINTERS CONFIG");
             List<string> configurationLines = File.ReadAllLines(PrinterSetupFilename).Where(line => !line.StartsWith("#")).ToList();
 
             int index = 0;
@@ -140,12 +135,12 @@ namespace PrintLimiterApi.Configuration
                         if (dailyLimit == "global")
                         {
                             InheritsFromGlobalConfLimit = true;
-                            dailyLimit = ParsedConfig.Where(name => name.Key == "maxpages").First().Value;
+                            //  dailyLimit = ParsedConfig.Where(name => name.Key == "maxpages").First().Value;
                         }
 
                         if (InheritsFromGlobalConfLimit)
                         {
-                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, int.Parse(dailyLimit), true));
+                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, -99, true));
                         }
                         else
                         {

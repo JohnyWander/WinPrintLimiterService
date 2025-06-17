@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrintLimiterApi.Users;
-using static PrintLimiterApi.Program;
+using System.Text;
 namespace PrintLimiterApi.Controllers
 {
-    
+
     [ApiController]
     [Route("[controller]")]
     public class PrintLimitApiController : ControllerBase
@@ -14,27 +14,55 @@ namespace PrintLimiterApi.Controllers
 
         }
 
+        [HttpPost("incrementcount")]
+        public string IncrementCount(IFormCollection data)
+        {
+            string username = data["username"].ToString();
+            string amount = data["amount"];
+            Console.WriteLine("increment from:" + username + ", by " + amount);
+            RemoteUserContext context = Program.UserManager.Clients.Where(x => x.UserName == username).FirstOrDefault();
+
+            context.CurrentPagesCount.value += int.Parse(amount);
+
+            return "incremented";
+        }
+
         [HttpPost("hello")]
-         public string hello(IFormCollection data)
-         {
-            if (Program.UserManager.CheckForContextExistance(data["username"].ToString()))
+        public string hello(IFormCollection data)
+        {
+            string username = data["username"].ToString();
+            Console.WriteLine("hello from:" + username);
+            StringBuilder pconf = new StringBuilder();
+            Program.Configuration.ParsedPrinterConfig.ForEach(x =>
             {
-                RemoteUserContext context = Program.UserManager.GetContext(data["username"].ToString());
-                
-                return $"logged";
-               
+                pconf.Append(x.PrintServer + ";");
+                pconf.Append(x.PrinterName + ";");
+                pconf.Append(x.DailyPagesLimit + ";");
+                pconf.Append("%endpconf%");
+
+            });
+            Console.WriteLine(pconf.ToString());
+
+            RemoteUserContext context = Program.UserManager.Clients.Where(x => x.UserName == username).FirstOrDefault();
+            if (context is not null)
+            {
+
+
+                return $"logged;UsedGlobalLimit={context.CurrentPagesCount.value};GlobalLimit={context.MaxPages.value}|{pconf.ToString()}";
+
+
             }
             else
             {
 
-                Program.UserManager.CreateUserContext(data["username"]);
-                return "registered";
+                RemoteUserContext con = Program.UserManager.CreateUserContext(username);
+                return $"registered;UsedGlobalLimit={con.CurrentPagesCount.value};GlobalLimit={con.MaxPages.value}|{pconf.ToString()}";
+
+
             }
-           
-            
-            
             return "X";
-         }
+        }
+
 
     }
 }

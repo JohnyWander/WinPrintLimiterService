@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace WinPrintLimiterService
 {
     internal static class Program
     {
-        /// <summary>
-        /// Główny punkt wejścia dla aplikacji.
-        /// </summary>
+   
         static void Main()
         {
+            //StartProcessAs start = new StartProcessAs();
+            //start.Main();
+
+            
+            //Thread.Sleep(10000);
+
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
