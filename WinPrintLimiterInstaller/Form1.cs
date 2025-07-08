@@ -26,9 +26,26 @@ namespace WinPrintLimiterInstaller
 
         private void InstallButton_Click(object sender, EventArgs e)
         {
-             data.InstallPath = this.InstallDirectoryBox.Text;
+            data.InstallPath = this.InstallDirectoryBox.Text;
+
+            if (data.UseXPS)
+            {
+                data.XPSprinterName = this.pName.Text;
+            }
+
+
             InstallProccess process = new InstallProccess(data);
             process.Start();
+        }
+
+        private void radio_inflight_CheckedChanged(object sender, EventArgs e)
+        {
+            data.UseXPS = false;
+        }
+
+        private void radio_xps_CheckedChanged(object sender, EventArgs e)
+        {
+            data.UseXPS = true;
         }
     }
 }

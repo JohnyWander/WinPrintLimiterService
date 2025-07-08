@@ -11,7 +11,8 @@ namespace WinPrintLimiter.Configuration
             new ConfigRecord("mode","local","Working mode - local keeps all data locally and limits printing locally, online (limit domain users on multiple pcs, requires server installation",new ModeConstraint()).Enable() },
             {"host",new ConfigRecord("host","","host address work working mode",null).Disable()},
             {"maxpages",new ConfigRecord("maxpages","-1","Max pages user can print(global option, can be overriden by printer specific congfig,\n# (local mode only) for online mode adjust server settings ").Enable()},
-
+            {"method",new ConfigRecord("method","inflight","Method of pages calculation,valid options - inflight,xpsprinter ") },
+            
 
         };
 

@@ -11,15 +11,18 @@
 
   <ItemGroup>
     <None Remove="WinPrintLimiter.exe" />
+    <None Remove="WinPrintLimiterWatchdog.dll" />
     <None Remove="WinPrintLimiterWatchdog.exe" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="WinPrintLimiter.exe" />
+    <EmbeddedResource Include="WinPrintLimiterWatchdog.dll" />
     <EmbeddedResource Include="WinPrintLimiterWatchdog.exe" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Management" Version="6.0.0" />
     <PackageReference Include="TaskScheduler" Version="2.12.1" />
   </ItemGroup>
 

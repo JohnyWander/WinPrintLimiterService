@@ -42,6 +42,8 @@
         }
 
 
+        internal string FriendlyName;
+
 
         internal PrinterContext(string printServer, string printerName, int CurrentCount, int MaxPages) : base(CurrentCount, MaxPages)
         {

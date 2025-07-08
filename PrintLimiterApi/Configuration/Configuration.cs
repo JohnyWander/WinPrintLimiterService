@@ -122,7 +122,7 @@ namespace PrintLimiterApi.Configuration
                         string printServerLine = lines.Where(x => x.Contains("PrintServer")).FirstOrDefault();
                         string printerNameLine = lines.Where(x => x.Contains("PrinterName")).FirstOrDefault();
                         string dailyLimitLine = lines.Where(x => x.Contains("DailyPagesLimit")).FirstOrDefault();
-
+                        string FriendlyNameLine = lines.Where(x => x.Contains("FriendlyName")).FirstOrDefault();
 
                         if (printServerLine is null) { throw new ConfigurationException($"Printer configuration at line {index} lacks print server name"); }
                         if (printerNameLine is null) { throw new ConfigurationException($"Printer configuration at line {index} lacks printer name"); }
@@ -131,6 +131,7 @@ namespace PrintLimiterApi.Configuration
                         string printServer = printServerLine.Split("=")[1];
                         string printerName = printerNameLine.Split("=")[1];
                         string dailyLimit = dailyLimitLine.Split("=")[1];
+                        string FriendlyName = FriendlyNameLine.Split("=")[1];
 
                         if (dailyLimit == "global")
                         {
@@ -140,18 +141,18 @@ namespace PrintLimiterApi.Configuration
 
                         if (InheritsFromGlobalConfLimit)
                         {
-                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, -99, true));
+                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName,FriendlyName, -99, true));
                         }
                         else
                         {
-                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName, int.Parse(dailyLimit)));
+                            base.ParsedPrinterConfig.Add(new PrinterConfig(printServer, printerName,FriendlyName, int.Parse(dailyLimit)));
                         }
 
                         if (Program.Debug)
                         {
                             base.ParsedPrinterConfig.ForEach(printer =>
                             {
-                                Console.WriteLine($"PRINTER|{printer.PrintServer}|{printer.PrinterName}|{printer.DailyPagesLimit}");
+                                Console.WriteLine($"PRINTER|{printer.PrintServer}|{printer.PrinterName}|{printer.FriendlyName}|{printer.DailyPagesLimit}");
                             });
                         }
                     }

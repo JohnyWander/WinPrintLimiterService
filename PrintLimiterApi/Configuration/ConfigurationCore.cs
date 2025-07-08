@@ -22,6 +22,7 @@ namespace PrintLimiterApi.Configuration
             "#<Printer>\n" +
             "#PrintServer=print.local.com # or 'local' for local installed printer\n" +
             "#PrinterName=example.hp2050-0323\n" +
+            "#FriendlyName=Printer near exit"+
             "#DailyPagesLimit=global # global inherits limit from global configuration, 0 or -1 or any integer > 0 - 0 disables printing, -1 stands for unlimited\n" +
 
             "#</Printer>\n";

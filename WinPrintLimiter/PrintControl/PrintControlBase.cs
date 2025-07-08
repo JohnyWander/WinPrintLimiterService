@@ -137,6 +137,10 @@ namespace WinPrintLimiter.PrintControl
                         if (CurrentCount >= PagesLimit)
                         {
                             job.Cancel();
+                            Task.Run(() =>
+                            {
+                                MessageBox.Show("przekroczono dzisiejszy limit drukowania (5) stron - Today's print limit exceeded - 5 pages ");
+                            });
                             Console.WriteLine($"Job was cancelled because limit is reached - {CurrentCount}/{PagesLimit}");
                             Thread.Sleep(4000);
                             JobWasCancelled = true;
@@ -150,7 +154,10 @@ namespace WinPrintLimiter.PrintControl
                             if (job.NumberOfPages > PagesLimit || CurrentCount + job.NumberOfPages > PagesLimit)
                             {
                                 Console.WriteLine($"Job was cancelled because limit would be exceeded (Current count - {CurrentCount} + pages of the job - {job.NumberOfPages}) is higher than limit - {PagesLimit} ");
-
+                                Task.Run(() =>
+                                {
+                                    MessageBox.Show("przekroczono dzisiejszy limit drukowania (5) stron - Today's print limit exceeded - 5 pages ");
+                                });
                                 job.Cancel();
                                 JobWasCancelled = true;
                             }
@@ -172,10 +179,28 @@ namespace WinPrintLimiter.PrintControl
                         }
 
                         Console.WriteLine("Finished, final count is: " + job.NumberOfPages);
+                        int finalCount = job.NumberOfPages;
+
+                        if(finalCount == 0)
+                        {
+                            job.Refresh();
+                            if(job.NumberOfPagesPrinted == 0)
+                            {
+                                //todo UNRELIABLE printer DRIVER - WMI workaround?
+                                Console.WriteLine("UNRELIABLE DRIVER");
+                                finalCount = 1;
+                            }
+                            else
+                            {
+                                finalCount = job.NumberOfPagesPrinted;
+                            }
+                           
+                        }
+
                         if (JobWasCancelled == false)
                         {
-                            CurrentCount += job.NumberOfPages;
-                            PageCountIncrement.Invoke(job.NumberOfPages);
+                            CurrentCount += finalCount;
+                            PageCountIncrement.Invoke(finalCount);
                         }
                     }
                 }

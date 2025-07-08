@@ -38,6 +38,7 @@ namespace PrintLimiterApi.Controllers
                 pconf.Append(x.PrintServer + ";");
                 pconf.Append(x.PrinterName + ";");
                 pconf.Append(x.DailyPagesLimit + ";");
+                pconf.Append(x.FriendlyName+";");
                 pconf.Append("%endpconf%");
 
             });
@@ -48,7 +49,7 @@ namespace PrintLimiterApi.Controllers
             {
 
 
-                return $"logged;UsedGlobalLimit={context.CurrentPagesCount.value};GlobalLimit={context.MaxPages.value}|{pconf.ToString()}";
+                return $"logged;UsedGlobalLimit={context.CurrentPagesCount.value};GlobalLimit={context.MaxPages.value}||{pconf.ToString()}";
 
 
             }
@@ -56,7 +57,7 @@ namespace PrintLimiterApi.Controllers
             {
 
                 RemoteUserContext con = Program.UserManager.CreateUserContext(username);
-                return $"registered;UsedGlobalLimit={con.CurrentPagesCount.value};GlobalLimit={con.MaxPages.value}|{pconf.ToString()}";
+                return $"registered;UsedGlobalLimit={con.CurrentPagesCount.value};GlobalLimit={con.MaxPages.value}||{pconf.ToString()}";
 
 
             }

@@ -9,44 +9,67 @@ namespace WinPrintLimiterWatchdog
         static extern int AllocConsole();
 
         static SCH sch = new SCH();
+        static PrintControl PC = new PrintControl(); 
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
-        [STAThread]
+        
         static void Main()
         {
             try
             {
-                AllocConsole();
+                //AllocConsole();
 
-                sch.CreateLimiterTask(null);
-                Thread.Sleep(1000);
-                sch.StartLimiterTask(null);
+                bool FoundLimiterProcess = false;
 
+                Exception findException = null;
+                FoundLimiterProcess = PC.FindLimiter(out findException,5,10000);
 
-                Thread.Sleep(1000);
+                
+                if (!FoundLimiterProcess)
+                {
+                    log("disabling spooler...");
+                    while (true)
+                    {
+                        PC.DisableSpooler();
+                        
+                        Thread.Sleep(10000);
+                    }
+                }
                
               
 
                 Security security = new Security();
                 security.OwnSec();
-                //security.LimiterSec();
-
+                security.LimiterSec();
+                
                 while (true)
                 {
-                    Thread.Sleep(10000);
+                    FoundLimiterProcess = PC.FindLimiter(out findException,1,5000);
+                    if (!FoundLimiterProcess)
+                    {
+                        log("disabling spooler...");
+
+                        while (true)
+                        {
+                            PC.DisableSpooler();
+                            
+                            Thread.Sleep(10000);
+                        }
+                    }
                 }
             }
             catch(Exception e)
             {               
                     Console.WriteLine(e.ToString());
-                    EventLog.WriteEntry("WinPrintLimiter5", e.Message, EventLogEntryType.Information);
-                while (true)
-                {
-                    Thread.Sleep(10000);
-                }
+                    log(e.Message);               
             }
 
+        }
+
+        static void log(string message)
+        {
+            File.AppendAllText("log.txt", message);
         }
     }
 }

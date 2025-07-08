@@ -10,6 +10,10 @@ namespace WinPrintLimiterInstaller.install
     {
         public string InstallPath;
 
+        public string XPSprinterName;
+
+        public bool UseXPS;
+        
         internal void Verify()
         {
 

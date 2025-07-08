@@ -12,6 +12,11 @@ namespace WinPrintLimiter
         [STAThread]
         static void Main()
         {
+            ApplicationConfiguration.Initialize();
+            
+            //Application.Run(MainForm);
+
+
             Init();
             Interop.AllocConsole();
             // Step One - Configuration checking, parsing
@@ -85,7 +90,7 @@ namespace WinPrintLimiter
                 RemoteUserContext context = new RemoteUserContext(endpoint);
 
                 string ServerHello = context.ServerHello().GetAwaiter().GetResult();
-                string[] HelloSplit = ServerHello.Split("|");
+                string[] HelloSplit = ServerHello.Split("||");
                 string[] StatusInfoSplit = HelloSplit[0].Split(";");
                 string PrinterInfo = HelloSplit[1];
 
@@ -100,22 +105,26 @@ namespace WinPrintLimiter
                 List<PrinterContext> printers = new List<PrinterContext>();
                 foreach (string printer in PrinterInfoSplit)
                 {
-
+                    Console.WriteLine(printer);
                     string[] split = printer.Split(";");
                     string PrintServer = split[0];
                     string PrinterName = split[1];
+                    string FriendlyName = split[3];
                     string Limit = split[2];
                     bool GlobalLimit = int.Parse(Limit) == -99 ? true : false;
 
                     Console.WriteLine("\nGot configuration:");
                     Console.WriteLine($"Printer name: {PrinterName}");
                     Console.WriteLine($"Print Server: {PrintServer}");
+                    Console.WriteLine($"Friendly name: {FriendlyName}");
                     Console.WriteLine($"Limit: {Limit}");
+                    
                     Console.WriteLine($"Limit is global?: {GlobalLimit}");
 
                     if (GlobalLimit)
                     {
                         PrinterContext con = new PrinterContext(PrintServer, PrinterName, new SharedInt(int.Parse(uGlobalLimit)), new SharedInt(int.Parse(globalLimit)));
+                        con.FriendlyName = FriendlyName;
                         con.PageCountIncrement = (int amount) =>
                         {
                             context.IncrementCurrentAmount(amount).GetAwaiter().GetResult();
@@ -127,9 +136,17 @@ namespace WinPrintLimiter
 
                 }
 
-                context.Printers = printers;
-                context.BindPrintersToContext();
+                string method = configuration.ParsedConfig.Where(conf => conf.Key == "method").FirstOrDefault().Value;
 
+                if (method == "xpsprinter")
+                {
+                    XPSprintControl control = new XPSprintControl(printers, context, int.Parse(globalLimit));
+                }
+                else
+                {
+                    context.Printers = printers;
+                    context.BindPrintersToContext();
+                }
 
 
                 //  Console.WriteLine(response);

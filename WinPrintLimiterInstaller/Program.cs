@@ -1,9 +1,12 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 namespace WinPrintLimiterInstaller
 {
     internal static class Program
     {
-        
+        [DllImport("kernel32.dll")]
+        static extern bool AllocConsole();
 
 
         /// <summary>
@@ -12,7 +15,7 @@ namespace WinPrintLimiterInstaller
         [STAThread]
         static void Main()
         {
-           
+            AllocConsole();
             //Unpack unpack = new Unpack();
             //unpack.UnpackWindPrintLimiter();
           //  SC sc = new SC();
